@@ -1,0 +1,39 @@
+buildscript {
+    apply from: '../versions.gradle'
+
+    repositories {
+        mavenCentral()
+        maven { url "https://kotlin.bintray.com/kotlinx" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlinx:kotlinx-gradle-serialization-plugin:$serialization_version"
+    }
+}
+
+apply plugin: 'kotlin-platform-js'
+apply plugin: 'kotlinx-serialization'
+
+// configure kotlin compiler
+compileKotlin2Js {
+    kotlinOptions {
+        metaInfo = true
+        outputFile = "$project.buildDir.path/js/${project.name}.js"
+        sourceMap = true
+        sourceMapEmbedSources = 'always'
+        moduleKind = 'commonjs'
+        main = "call"
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_version"
+    expectedBy project(":mp-common")
+    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+}
