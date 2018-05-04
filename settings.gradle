@@ -1,0 +1,8 @@
+rootProject.name = 'mp'
+
+include 'mp-common'
+include 'mp-jvm'
+include 'mp-js'
+
+include 'server'
+include 'web'
