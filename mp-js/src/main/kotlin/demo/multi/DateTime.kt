@@ -7,7 +7,7 @@ import moment.moment
 import kotlin.js.Date
 
 @Serializable
-actual class DateTime actual constructor(val time: Long) {
+actual class DateTime actual constructor(actual val time: Long) {
   actual companion object {
     actual val now: DateTime
       get() = DateTime(Date().getTime().asDynamic())
@@ -18,5 +18,9 @@ actual class DateTime actual constructor(val time: Long) {
   actual fun formatted(): String {
     return moment(time.toDouble()).format("dddd, MMMM Do YYYY")
   }
-  fun short() = moment(time).format("YYYY-MM-DD")
+  actual operator fun compareTo(other: DateTime) = (time.asDynamic() - other.time.asDynamic()) as Int
+
+  fun short(): String {
+    return moment(time).format("YYYY-MM-DD")
+  }
 }
