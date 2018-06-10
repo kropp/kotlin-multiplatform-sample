@@ -31,9 +31,13 @@ fun main(args: Array<String>) {
       post("/api/todo") {
         val text = call.receiveText()
         val todo = JSON.parse<Todo>(text)
-        val id = UUID.randomUUID().toString()
-        todos[id] = todo.copy(id = id)
-        call.respondText(JSON.stringify(todos[id]!!))
+        if (todo.isValid() == null) {
+          val id = UUID.randomUUID().toString()
+          todos[id] = todo.copy(id = id)
+          call.respondText(JSON.stringify(todos[id]!!))
+        } else {
+          call.respond(HttpStatusCode.BadRequest, todo.isValid() ?: "")
+        }
       }
       put("/api/todo/{id}") {
         val id = call.parameters["id"]!!

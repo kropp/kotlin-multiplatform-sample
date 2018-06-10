@@ -44,14 +44,24 @@ class TodoListComponent : RComponent<NoProps, TodoListComponent.State>() {
         +"Add"
         attrs.onClickFunction = {
           async {
-            val response = window.fetch("/api/todo", POST(Todo(text = state.text, dateTime = state.dueDate))).await().text().await()
-            val newItem = JSON.parse<Todo>(response)
-            setState { todos = TodoList(state.todos.tasks + newItem) }
+            val response = window.fetch("/api/todo", POST(currentToDo)).await()
+            if (response.ok) {
+              val newItem = JSON.parse<Todo>(response.text().await())
+              setState { todos = TodoList(state.todos.tasks + newItem) }
+            } else {
+              window.alert(response.text().await())
+            }
           }
         }
       }
+      div {
+        attrs.classes = setOf("error")
+        +(currentToDo.isValid() ?: "")
+      }
     }
   }
+
+  val currentToDo get() = Todo(text = state.text, dueDate = state.dueDate)
 
   private fun refresh() {
     async {
@@ -75,7 +85,7 @@ class TodoItemComponent : RComponent<TodoItemComponent.Props, NoState>() {
       small {
         +" due on "
         i {
-          +props.todo.dateTime.formatted()
+          +props.todo.dueDate.formatted()
         }
       }
       button(classes = "delete") {
