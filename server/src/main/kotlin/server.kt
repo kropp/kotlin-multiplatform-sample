@@ -1,6 +1,4 @@
-import demo.multi.DateTime
-import demo.multi.Todo
-import demo.multi.TodoList
+import demo.multi.*
 import io.ktor.application.call
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
@@ -14,7 +12,8 @@ import kotlinx.serialization.json.JSON
 import java.util.*
 
 fun main(args: Array<String>) {
-  val todos = mutableMapOf("7c4f6cf1-c955-47ef-9fea-6f1929697ec8" to Todo("7c4f6cf1-c955-47ef-9fea-6f1929697ec8", "First Todo", DateTime.now))
+  val fid = "7c4f6cf1-c955-47ef-9fea-6f1929697ec8"
+  val todos = mutableMapOf(fid to Todo(fid, "Write ToDo list", DateTime.now + 1.days))
 
   val server = embeddedServer(Netty, 8080) {
     routing {
@@ -30,9 +29,10 @@ fun main(args: Array<String>) {
         }
       }
       post("/api/todo") {
-        val id = UUID.randomUUID().toString()
         val text = call.receiveText()
-        todos[id] = JSON.parse<Todo>(text).copy(id = id)
+        val todo = JSON.parse<Todo>(text)
+        val id = UUID.randomUUID().toString()
+        todos[id] = todo.copy(id = id)
         call.respondText(JSON.stringify(todos[id]!!))
       }
       put("/api/todo/{id}") {
