@@ -1,0 +1,58 @@
+buildscript {
+    apply from: '../versions.gradle'
+
+    repositories {
+        mavenCentral()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:$frontend_version"
+    }
+}
+
+apply plugin: 'org.jetbrains.kotlin.frontend'
+apply plugin: 'kotlin-dce-js'
+apply plugin: 'kotlin2js'
+
+// configure kotlin compiler
+compileKotlin2Js {
+    kotlinOptions {
+        metaInfo = true
+        outputFile = "$project.buildDir.path/js/${project.name}.js"
+        sourceMap = true
+        sourceMapEmbedSources = 'always'
+        moduleKind = 'commonjs'
+        main = "call"
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url "https://kotlin.bintray.com/kotlin-js-wrappers" }
+}
+
+dependencies {
+    implementation project(":shared")
+    implementation "org.jetbrains:kotlin-react-dom:$kotlin_react_version"
+}
+
+kotlinFrontend {
+    webpackBundle {
+        bundleName = "main"
+        contentPath = file('src/main/web')
+        publicPath = "/"
+        proxyUrl = "http://localhost:8080"
+    }
+    sourceMaps = true
+
+    npm {
+        dependency("core-js")
+        dependency("react", react_version)
+        dependency("react-dom", react_version)
+        dependency("moment")
+        dependency("mocha")
+    }
+}

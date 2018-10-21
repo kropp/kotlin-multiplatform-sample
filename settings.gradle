@@ -1,8 +1,7 @@
 rootProject.name = 'mp'
 
-include 'mp-common'
-include 'mp-jvm'
-include 'mp-js'
+include 'shared'
+include 'frontend'
+include 'backend'
 
-include 'server'
-include 'web'
+enableFeaturePreview('GRADLE_METADATA')
