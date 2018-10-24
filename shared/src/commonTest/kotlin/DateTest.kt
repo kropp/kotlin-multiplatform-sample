@@ -2,7 +2,7 @@ import kotlin.test.*
 
 class DateTest {
   @Test fun validateBirthday() {
-    assertFalse(validate(3, 31, 1986))
-    assertTrue(validate(31, 3, 1986))
+    assertFalse(validate(Day(3), Month(31), Year(1986)))
+    assertTrue(validate(Month(31), Day(3), Year(1986)))
   }
 }

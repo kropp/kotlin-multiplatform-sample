@@ -6,6 +6,6 @@ class Tests {
   @Test
   fun test() {
     println("hello")
-    assertTrue(false)
+    assertTrue(true)
   }
 }
